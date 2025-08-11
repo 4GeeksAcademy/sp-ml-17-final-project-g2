@@ -30,21 +30,46 @@ The goal of this project is to develop a complete end-to-end Machine Learning so
 
 ## 🚀 Project Overview
 
-*[This section will be updated as we define our specific project scope and objectives]*
+**EduInsight: Global Education Analytics Platform**
 
 ### Problem Statement
-*To be defined - we will identify a real-world problem that can be solved using Machine Learning techniques*
+Educational policymakers and researchers struggle to make data-driven decisions due to fragmented and complex global education data. With over 195 countries tracking 64+ education indicators across decades, stakeholders need an intuitive tool to identify patterns, predict trends, and benchmark performance to drive meaningful educational improvements.
+
+### Web Application Proposition
+
+**EduInsight** is an intelligent web application that transforms complex global education data into actionable insights through machine learning predictions and interactive visualizations.
+
+#### User Story
+*"As an educational policymaker, I want to quickly assess my country's education performance compared to similar nations and predict future trends, so that I can make informed decisions about resource allocation and policy interventions to improve educational outcomes."*
+
+#### What We're Solving
+- **Data Complexity**: Convert 340K+ education records into understandable insights
+- **Benchmarking Challenge**: Enable instant country-to-country performance comparisons
+- **Trend Prediction**: Forecast future education indicators using ML algorithms
+- **Decision Support**: Provide evidence-based recommendations for policy makers
+
+#### Key Features
+- **Country Performance Dashboard**: Visual comparison of education metrics
+- **Predictive Analytics**: ML-powered forecasting of education trends
+- **Regional Benchmarking**: Compare performance against regional averages
+- **Historical Analysis**: Track progress over 50+ years of education data
+- **Policy Impact Simulation**: Model potential outcomes of educational interventions
 
 ### Dataset
-*To be defined - we will acquire a dataset that meets the following minimum requirements:*
-- 60,000+ instances (rows)
-- 20+ predictor variables (including at least 1 categorical variable)
+**Global Education Indicators (1970-2023)**
+- **340,145 instances** across 195 countries/territories
+- **20+ variables** including categorical (regions, income levels) and numerical indicators
+- **64 education metrics** covering enrollment, completion rates, and quality measures
+- **50+ year timespan** enabling comprehensive trend analysis
 
 ### Methodology
-*To be defined - we will document our chosen approach and algorithms*
+Machine learning models trained on temporal data to predict education outcomes and identify key performance drivers, deployed through an interactive web interface for real-time insights.
 
-### Results
-*To be updated with our findings and model performance*
+### Target Users
+- Educational policymakers and government officials
+- International development organizations (UNESCO, World Bank, UNICEF)
+- Education researchers and analysts
+- NGOs working in education development
 
 ## 📝 Project Phases
 
