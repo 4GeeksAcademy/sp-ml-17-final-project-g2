@@ -120,10 +120,9 @@ Create a Machine Learning web application using your saved model. You can use Fl
 ```
 ml-project-repo/
 ├── 📁 data/                # Raw and processed datasets
-│    ├── 📁 interin/        # For intermediate data that has been transformed.
-│    ├── 📁 processed/      # For the final data to be used for modeling.
-│    ├── 📁 raw/            # For raw data without any processing.
-├── 📁 database/            # SQL scripts and database configs
+│    ├── 📁 processed/      # ML-ready datasets and preprocessing objects
+│    ├── 📁 raw/            # Original raw dataset
+├── 📁 database/            # SQL scripts and database configs  
 ├── 📁 docs/                # Documentation and presentation materials
 ├── 📁 models/              # Trained model artifacts
 ├── 📁 notebooks/           # Jupyter notebooks for EDA and analysis
