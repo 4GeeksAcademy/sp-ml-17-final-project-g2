@@ -122,17 +122,82 @@ ml-project-repo/
 ├── 📁 data/                # Raw and processed datasets
 │    ├── 📁 processed/      # ML-ready datasets and preprocessing objects
 │    ├── 📁 raw/            # Original raw dataset
-├── 📁 database/            # SQL scripts and database configs  
+├── 📁 database/            # Database implementation (Step 3)
+│    ├── create_schema.sql  # SQLite database schema
+│    ├── database_setup.ipynb # Database creation and data loading
+│    ├── db_utils.py        # Database utility functions for web app
+│    └── README.md          # Database documentation
 ├── 📁 docs/                # Documentation and presentation materials
 ├── 📁 models/              # Trained model artifacts
+│    ├── eduinsight_xgboost_model.pkl # Production-ready XGBoost model
+│    └── model_metadata.pkl # Model performance and configuration
 ├── 📁 notebooks/           # Jupyter notebooks for EDA and analysis
+│    ├── 01_eda_data_cleaning.ipynb # Data exploration and preprocessing
+│    ├── 02_model_training_xgboost.ipynb # ML model development
+│    └── README.md          # Notebooks documentation
 ├── 📁 src/                 # Source code modules
 ├── 📁 webapp/              # Flask/Streamlit application
+└── README.md               # Project documentation
+```
+
+## � Database Module (Step 3)
+
+The `database/` folder implements persistent data storage for the EduInsight platform:
+
+### Purpose
+- **Data Persistence**: Store 340K+ education records efficiently
+- **Fast Queries**: Enable rapid country comparisons and trend analysis
+- **Web App Integration**: Provide database access for the web application
+- **Academic Requirement**: Demonstrate SQL skills as required by the project
+
+### Database Workflow
+
+1. **Schema Creation**: `create_schema.sql` defines the education data structure
+2. **Data Loading**: `database_setup.ipynb` creates database and loads processed data
+3. **Web Integration**: `db_utils.py` provides database functions for the web application
+
+### Key Features
+- **SQLite Database**: Simple, portable, and efficient for our use case
+- **Indexed Queries**: Fast access by country, year, indicator, and region
+- **SQL Demonstrations**: Country performance, regional analysis, temporal trends
+- **Production Ready**: Database utilities ready for web deployment
+
+### Usage Example
+```python
+from database.db_utils import EduInsightDB
+
+# Initialize database connection
+db = EduInsightDB()
+
+# Get all countries
+countries = db.get_countries()
+
+# Analyze country performance
+spain_data = db.get_country_performance('Spain', years=[2020, 2021, 2022])
+
+# Regional comparisons
+regional_data = db.get_regional_comparison('enrollment')
 ```
 
 ## 🛠️ Technologies Used
 
-*[To be updated as we select our tech stack]*
+**Data Processing & Analysis:**
+- Python, Pandas, NumPy
+- Scikit-learn, XGBoost
+- Matplotlib, Seaborn
+
+**Database & Storage:**
+- SQLite (for data persistence)
+- SQL queries for data access
+
+**Machine Learning:**
+- XGBoost Regression (94.75% R² score)
+- Hyperparameter optimization
+- Feature importance analysis
+
+**Development Environment:**
+- Jupyter Notebooks
+- Git version control
 
 ## 📊 Results
 
