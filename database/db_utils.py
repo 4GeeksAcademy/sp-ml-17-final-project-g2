@@ -30,7 +30,11 @@ class EduInsightDB:
         """Get performance data for a specific country"""
         with self.get_connection() as conn:
             if years:
-                year_filter = f"AND year IN ({','.join(map(str, years))})"
+            params = [country]
+            if years:
+                placeholders = ','.join(['?'] * len(years))
+                year_filter = f"AND year IN ({placeholders})"
+                params.extend(years)
             else:
                 year_filter = ""
             
