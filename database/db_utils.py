@@ -79,7 +79,19 @@ class EduInsightDB:
             GROUP BY whoreg6 
             ORDER BY avg_value DESC
             """
-            return pd.read_sql_query(query, conn, params=[f"%{indicator}%"])
+            # Optionally, validate indicator against known indicators
+            # indicators = self.get_indicators()
+            # if indicator not in indicators:
+            #     raise ValueError("Invalid indicator name")
+            escaped_indicator = self._escape_like(indicator)
+            query = """
+            SELECT whoreg6, AVG(estimate) as avg_value, COUNT(*) as records
+            FROM education_data 
+            WHERE indicator_name LIKE ? ESCAPE '\\' AND whoreg6 IS NOT NULL
+            GROUP BY whoreg6 
+            ORDER BY avg_value DESC
+            """
+            return pd.read_sql_query(query, conn, params=[f"%{escaped_indicator}%"])
     
     def get_data_for_prediction(self, country: str, year: int) -> pd.DataFrame:
         """Get features for ML prediction"""
