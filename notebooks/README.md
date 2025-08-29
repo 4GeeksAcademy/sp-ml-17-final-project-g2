@@ -131,7 +131,7 @@
 - **R² Score**: 94.75% (exceptional variance explanation)
 - **RMSE**: 7.69% (excellent prediction accuracy)
 - **MAE**: 4.72% (median absolute error)
-- **MAPE**: 120.59% (policy-relevant metric)
+- **MAPE**: 4.72% (policy-relevant metric)
 
 ### **Algorithm Comparison Results**
 **Performance Ranking**:
