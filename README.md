@@ -30,21 +30,46 @@ The goal of this project is to develop a complete end-to-end Machine Learning so
 
 ## 🚀 Project Overview
 
-*[This section will be updated as we define our specific project scope and objectives]*
+**EduInsight: Global Education Analytics Platform**
 
 ### Problem Statement
-*To be defined - we will identify a real-world problem that can be solved using Machine Learning techniques*
+Educational policymakers and researchers struggle to make data-driven decisions due to fragmented and complex global education data. With over 195 countries tracking 64+ education indicators across decades, stakeholders need an intuitive tool to identify patterns, predict trends, and benchmark performance to drive meaningful educational improvements.
+
+### Web Application Proposition
+
+**EduInsight** is an intelligent web application that transforms complex global education data into actionable insights through machine learning predictions and interactive visualizations.
+
+#### User Story
+*"As an educational policymaker, I want to quickly assess my country's education performance compared to similar nations and predict future trends, so that I can make informed decisions about resource allocation and policy interventions to improve educational outcomes."*
+
+#### What We're Solving
+- **Data Complexity**: Convert 340K+ education records into understandable insights
+- **Benchmarking Challenge**: Enable instant country-to-country performance comparisons
+- **Trend Prediction**: Forecast future education indicators using ML algorithms
+- **Decision Support**: Provide evidence-based recommendations for policy makers
+
+#### Key Features
+- **Country Performance Dashboard**: Visual comparison of education metrics
+- **Predictive Analytics**: ML-powered forecasting of education trends
+- **Regional Benchmarking**: Compare performance against regional averages
+- **Historical Analysis**: Track progress over 50+ years of education data
+- **Policy Impact Simulation**: Model potential outcomes of educational interventions
 
 ### Dataset
-*To be defined - we will acquire a dataset that meets the following minimum requirements:*
-- 60,000+ instances (rows)
-- 20+ predictor variables (including at least 1 categorical variable)
+**Global Education Indicators (1970-2023)**
+- **340,145 instances** across 195 countries/territories
+- **20+ variables** including categorical (regions, income levels) and numerical indicators
+- **64 education metrics** covering enrollment, completion rates, and quality measures
+- **50+ year timespan** enabling comprehensive trend analysis
 
 ### Methodology
-*To be defined - we will document our chosen approach and algorithms*
+Machine learning models trained on temporal data to predict education outcomes and identify key performance drivers, deployed through an interactive web interface for real-time insights.
 
-### Results
-*To be updated with our findings and model performance*
+### Target Users
+- Educational policymakers and government officials
+- International development organizations (UNESCO, World Bank, UNICEF)
+- Education researchers and analysts
+- NGOs working in education development
 
 ## 📝 Project Phases
 
@@ -95,20 +120,84 @@ Create a Machine Learning web application using your saved model. You can use Fl
 ```
 ml-project-repo/
 ├── 📁 data/                # Raw and processed datasets
-│    ├── 📁 interin/        # For intermediate data that has been transformed.
-│    ├── 📁 processed/      # For the final data to be used for modeling.
-│    ├── 📁 raw/            # For raw data without any processing.
-├── 📁 database/            # SQL scripts and database configs
+│    ├── 📁 processed/      # ML-ready datasets and preprocessing objects
+│    ├── 📁 raw/            # Original raw dataset
+├── 📁 database/            # Database implementation (Step 3)
+│    ├── create_schema.sql  # SQLite database schema
+│    ├── database_setup.ipynb # Database creation and data loading
+│    ├── db_utils.py        # Database utility functions for web app
+│    └── README.md          # Database documentation
 ├── 📁 docs/                # Documentation and presentation materials
 ├── 📁 models/              # Trained model artifacts
+│    ├── eduinsight_xgboost_model.pkl # Production-ready XGBoost model
+│    └── model_metadata.pkl # Model performance and configuration
 ├── 📁 notebooks/           # Jupyter notebooks for EDA and analysis
+│    ├── 01_eda_data_cleaning.ipynb # Data exploration and preprocessing
+│    ├── 02_model_training_xgboost.ipynb # ML model development
+│    └── README.md          # Notebooks documentation
 ├── 📁 src/                 # Source code modules
 ├── 📁 webapp/              # Flask/Streamlit application
+└── README.md               # Project documentation
+```
+
+## � Database Module (Step 3)
+
+The `database/` folder implements persistent data storage for the EduInsight platform:
+
+### Purpose
+- **Data Persistence**: Store 340K+ education records efficiently
+- **Fast Queries**: Enable rapid country comparisons and trend analysis
+- **Web App Integration**: Provide database access for the web application
+- **Academic Requirement**: Demonstrate SQL skills as required by the project
+
+### Database Workflow
+
+1. **Schema Creation**: `create_schema.sql` defines the education data structure
+2. **Data Loading**: `database_setup.ipynb` creates database and loads processed data
+3. **Web Integration**: `db_utils.py` provides database functions for the web application
+
+### Key Features
+- **SQLite Database**: Simple, portable, and efficient for our use case
+- **Indexed Queries**: Fast access by country, year, indicator, and region
+- **SQL Demonstrations**: Country performance, regional analysis, temporal trends
+- **Production Ready**: Database utilities ready for web deployment
+
+### Usage Example
+```python
+from database.db_utils import EduInsightDB
+
+# Initialize database connection
+db = EduInsightDB()
+
+# Get all countries
+countries = db.get_countries()
+
+# Analyze country performance
+spain_data = db.get_country_performance('Spain', years=[2020, 2021, 2022])
+
+# Regional comparisons
+regional_data = db.get_regional_comparison('enrollment')
 ```
 
 ## 🛠️ Technologies Used
 
-*[To be updated as we select our tech stack]*
+**Data Processing & Analysis:**
+- Python, Pandas, NumPy
+- Scikit-learn, XGBoost
+- Matplotlib, Seaborn
+
+**Database & Storage:**
+- SQLite (for data persistence)
+- SQL queries for data access
+
+**Machine Learning:**
+- XGBoost Regression (94.75% R² score)
+- Hyperparameter optimization
+- Feature importance analysis
+
+**Development Environment:**
+- Jupyter Notebooks
+- Git version control
 
 ## 📊 Results
 
