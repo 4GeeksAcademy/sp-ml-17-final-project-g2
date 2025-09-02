@@ -7,7 +7,7 @@ import pandas as pd
 from typing import Optional, List
 
 class EduInsightDB:
-    def __init__(self, db_path: str = 'database/eduinsight.db'):
+    def __init__(self, db_path: str = 'eduinsight.db'):
         self.db_path = db_path
     
     def get_connection(self):
