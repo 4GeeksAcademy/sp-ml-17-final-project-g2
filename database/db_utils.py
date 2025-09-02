@@ -29,7 +29,6 @@ class EduInsightDB:
     def get_country_performance(self, country: str, years: Optional[List[int]] = None) -> pd.DataFrame:
         """Get performance data for a specific country"""
         with self.get_connection() as conn:
-            if years:
             params = [country]
             if years:
                 placeholders = ','.join(['?'] * len(years))
@@ -44,7 +43,7 @@ class EduInsightDB:
                 WHERE setting = ? {year_filter}
                 ORDER BY year, indicator_name
             """
-            df = pd.read_sql_query(query, conn, params=[country])
+            df = pd.read_sql_query(query, conn, params=params)
             return df
     
     def get_country_summary(self, country: str) -> dict:
