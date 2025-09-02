@@ -9,29 +9,27 @@
 - **API Integration**: Built-in API routes to connect with Python ML models and SQLite database
 - **Production Ready**: Optimized deployment on platforms like Vercel or Heroku
 
-## Project Structure
+## Project Structure (Current - Simple Start)
 
 ```
 webapp/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx         # Main layout
-│   │   ├── page.tsx           # Homepage
-│   │   ├── dashboard/         # Dashboard pages
-│   │   ├── predictions/       # ML prediction interface
-│   │   └── api/               # Backend API routes
-│   ├── components/            # Reusable UI components
-│   │   ├── ui/               # Basic UI components
-│   │   ├── dashboard/        # Dashboard-specific components
-│   │   └── charts/           # Data visualization components
-│   ├── lib/                  # Utility functions
-│   │   └── api.ts            # Database connection utilities
-│   └── types/                # TypeScript type definitions
-│       └── education.ts      # Education data types
+│   └── app/                   # Next.js App Router
+│       ├── layout.tsx        # Main layout
+│       ├── page.tsx          # Homepage
+│       ├── globals.css       # Global styles
+│       └── favicon.ico       # App icon
 ├── public/                   # Static assets
 ├── package.json             # Dependencies
 └── README.md               # This file
 ```
+
+## Next Steps (Future Development)
+- Add `/components` folder for reusable UI components  
+- Add `/lib` folder for API utilities and database connections
+- Add `/types` folder for TypeScript definitions
+- Add API routes in `/app/api` for backend integration
+- Add dashboard and prediction pages
 
 ## Architecture Overview
 
