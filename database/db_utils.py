@@ -49,11 +49,18 @@ class EduInsightDB:
     def get_country_summary(self, country: str) -> dict:
         """Get aggregated performance summary for a country"""
         with self.get_connection() as conn:
+            # Get key education indicators using broader patterns
             query = """
                 SELECT 
-                    AVG(CASE WHEN indicator_name LIKE '%Reading%' OR indicator_name LIKE '%reading%' THEN estimate END) as reading_score,
-                    AVG(CASE WHEN indicator_name LIKE '%Math%' OR indicator_name LIKE '%math%' THEN estimate END) as math_score,
-                    AVG(CASE WHEN indicator_name LIKE '%Science%' OR indicator_name LIKE '%science%' THEN estimate END) as science_score,
+                    AVG(CASE WHEN indicator_name LIKE '%literacy%' 
+                             OR indicator_name LIKE '%primary completion%'
+                             OR indicator_name LIKE '%completed primary%' THEN estimate END) as literacy_score,
+                    AVG(CASE WHEN indicator_name LIKE '%enrollment%' OR indicator_name LIKE '%enrolment%' 
+                             OR indicator_name LIKE '%school enrollment%' OR indicator_name LIKE '%net enrollment%'
+                             OR indicator_name LIKE '%out of school%' THEN 
+                             CASE WHEN indicator_name LIKE '%out of school%' THEN 100 - estimate ELSE estimate END END) as enrollment_score,
+                    AVG(CASE WHEN indicator_name LIKE '%completion%' OR indicator_name LIKE '%complete%' 
+                             OR indicator_name LIKE '%lower secondary%' OR indicator_name LIKE '%upper secondary%' THEN estimate END) as completion_score,
                     COUNT(*) as total_records
                 FROM education_data 
                 WHERE setting = ?
@@ -61,9 +68,9 @@ class EduInsightDB:
             result = conn.execute(query, [country]).fetchone()
             if result and result[3] > 0:
                 return {
-                    'reading_score': result[0] or 0,
-                    'math_score': result[1] or 0,
-                    'science_score': result[2] or 0,
+                    'reading_score': result[0] or 0,  # Literacy & basic education completion
+                    'math_score': result[1] or 0,     # School access & enrollment
+                    'science_score': result[2] or 0,  # Education completion rates
                     'total_records': result[3]
                 }
             return None

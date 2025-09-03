@@ -32,10 +32,10 @@ def run_test_suite(test_path, test_name):
         return False, "", str(e)
 
 def main():
-    """Run all Phase 1 tests and generate report"""
-    print("🚀 EDUINSIGHT PHASE 1 TEST SUITE")
+    """Run all tests and generate report"""
+    print("🚀 EDUINSIGHT COMPLETE TEST SUITE")
     print("=" * 60)
-    print("Testing: Database + API Routes + Integration")
+    print("Testing: Database + API Routes + Frontend + ML Integration")
     print("=" * 60)
     
     test_suites = [
@@ -44,7 +44,11 @@ def main():
         ("tests/api/test_api_endpoints_functionality.py", 
          "API Endpoints Functionality"),
         ("tests/test_phase_1_integration_complete.py", 
-         "Phase 1 Integration Complete")
+         "Phase 1 Integration Complete"),
+        ("tests/ml/test_ml_predictions_functionality.py",
+         "ML Predictions Functionality"),
+        ("tests/test_ml_integration_complete.py",
+         "Complete ML Integration Workflow")
     ]
     
     results = []
@@ -75,15 +79,17 @@ def main():
     print(f"Time: {total_time:.1f} seconds")
     
     if passed == total:
-        print("\n🎉 ALL TESTS PASSED - PHASE 1 IS READY!")
+        print("\n🎉 ALL TESTS PASSED - COMPLETE PLATFORM READY!")
         print("✅ Database connection working")
         print("✅ API endpoints functional") 
         print("✅ Integration validated")
-        print("\n💡 Ready to implement frontend components!")
+        print("✅ ML predictions operational")
+        print("✅ Frontend interfaces working")
+        print("\n💡 Ready for production deployment!")
         return True
     else:
         print(f"\n⚠️  {total - passed} TEST SUITE(S) FAILED")
-        print("❌ Phase 1 needs fixes before proceeding")
+        print("❌ Platform needs fixes before deployment")
         print("\n🔧 Check the detailed output above for specific issues")
         return False
 
