@@ -38,19 +38,37 @@ export async function executePythonScript(scriptCode: string): Promise<unknown> 
     for (const testPath of possiblePaths) {
       if (fs.existsSync(testPath)) {
         databasePath = testPath;
+        console.log(`Database path found: ${databasePath}`);
         break;
       }
     }
     
+    // Verify db_utils.py exists
+    const dbUtilsPath = path.join(databasePath, 'db_utils.py');
+    if (!fs.existsSync(dbUtilsPath)) {
+      throw new Error(`db_utils.py not found at ${dbUtilsPath}`);
+    }
+    
+    console.log(`Executing Python script in: ${databasePath}`);
+    
     const { stdout, stderr } = await execAsync(`python3 -c "${scriptCode.replace(/"/g, '\\"')}"`, {
       cwd: databasePath,
-      timeout: 30000,
+      timeout: 120000, // Increased to 2 minutes for Render's slower environment
+      maxBuffer: 1024 * 1024 * 10, // 10MB buffer for large results
     });
 
     if (stderr && stderr.trim() !== '') {
       console.error('Python stderr:', stderr);
+      throw new Error(`Python execution error: ${stderr}`);
     }
 
+    if (!stdout || stdout.trim() === '') {
+      console.error('Python execution produced no output');
+      throw new Error('Python script returned empty output');
+    }
+
+    console.log('Python execution successful, output length:', stdout.length);
+    
     const result = JSON.parse(stdout.trim());
     return result;
   } catch (error: unknown) {
@@ -67,13 +85,23 @@ export async function getCountries(): Promise<string[]> {
   const scriptCode = `
 import sys
 import os
-sys.path.append('.')
-from db_utils import EduInsightDB
-import json
 
-db = EduInsightDB()
-countries = db.get_countries()
-print(json.dumps(countries))
+# Add current directory and parent directories to path
+sys.path.insert(0, '.')
+sys.path.insert(0, os.path.join('.', 'database'))
+sys.path.insert(0, os.path.join('..', 'database'))
+
+try:
+    from db_utils import EduInsightDB
+    import json
+    
+    db = EduInsightDB()
+    countries = db.get_countries()
+    print(json.dumps(countries))
+except Exception as e:
+    import json
+    error_result = {'error': f'Failed to get countries: {str(e)}'}
+    print(json.dumps(error_result))
 `;
   
   return await executePythonScript(scriptCode) as string[];
