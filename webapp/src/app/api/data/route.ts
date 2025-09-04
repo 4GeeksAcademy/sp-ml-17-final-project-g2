@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCountryPerformance, getCountrySummary } from '@/lib/database';
+import { getCountryPerformance, getCountrySummary } from '../../../lib/database';
 
 export async function GET(request: NextRequest) {
   try {

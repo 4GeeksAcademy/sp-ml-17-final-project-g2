@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { executePythonScript } from '@/lib/database';
+import { executePythonScript } from '../../../lib/database';
 
 export async function POST(request: NextRequest) {
   try {
