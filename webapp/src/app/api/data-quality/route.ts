@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { executePythonScript } from '@/lib';
+import { executePythonScript } from '../../../lib/index';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
