@@ -2,13 +2,18 @@
   "name": "webapp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.16.0",
+    "npm": ">=10.8.0"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run setup-python && next build",
+    "build": "npm run setup-python && NODE_ENV=production next build",
     "start": "next start",
     "start-production": "./start-production.sh",
     "lint": "eslint",
-    "setup-python": "pip install -r requirements.txt"
+    "setup-python": "pip install -r requirements.txt",
+    "render-build": "./render-build.sh"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
