@@ -172,11 +172,46 @@ try:
         historical_data = db.get_country_performance(country)
         if historical_data is not None and not historical_data.empty:
             # Filter for similar indicators if possible
-            similar_data = historical_data[
-                historical_data['indicator_name'].str.contains(
-                    '|'.join(indicator.split()[:2]), case=False, na=False
-                )
+        try:
+            # Improved indicator matching - try exact match first, then progressively broader
+            similar_data = None
+            
+            # 1. Try exact indicator name match
+            exact_match = historical_data[
+                historical_data['indicator_name'] == indicator
             ]
+            
+            if not exact_match.empty:
+                similar_data = exact_match
+                print(f"DEBUG: Found exact indicator match with {len(similar_data)} samples", file=sys.stderr)
+            
+            # 2. Try key concept matching (more specific than just first 2 words)
+            elif 'literacy' in indicator.lower():
+                similar_data = historical_data[
+                    historical_data['indicator_name'].str.contains('literacy', case=False, na=False)
+                ]
+                print(f"DEBUG: Found literacy indicators with {len(similar_data)} samples", file=sys.stderr)
+            
+            elif any(term in indicator.lower() for term in ['enrollment', 'enrolment']):
+                similar_data = historical_data[
+                    historical_data['indicator_name'].str.contains('enrollment|enrolment', case=False, na=False)
+                ]
+                print(f"DEBUG: Found enrollment indicators with {len(similar_data)} samples", file=sys.stderr)
+            
+            elif 'completion' in indicator.lower():
+                similar_data = historical_data[
+                    historical_data['indicator_name'].str.contains('completion', case=False, na=False)
+                ]
+                print(f"DEBUG: Found completion indicators with {len(similar_data)} samples", file=sys.stderr)
+            
+            # 3. Fallback to first 2 words (but this often catches too much)
+            else:
+                similar_data = historical_data[
+                    historical_data['indicator_name'].str.contains(
+                        '|'.join(indicator.split()[:2]), case=False, na=False
+                    )
+                ]
+                print(f"DEBUG: Using fallback word matching with {len(similar_data)} samples", file=sys.stderr)
             
             if not similar_data.empty:
                 # Calculate temporal features
