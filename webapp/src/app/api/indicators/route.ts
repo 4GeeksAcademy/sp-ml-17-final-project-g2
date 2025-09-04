@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getIndicators } from '../../../lib/database';
+import { getIndicators } from '../../../lib';
 
 export async function GET() {
   try {
