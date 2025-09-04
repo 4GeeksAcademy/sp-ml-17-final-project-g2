@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run setup-python && next build --turbopack",
+    "build": "npm run setup-python && next build",
     "start": "next start",
     "start-production": "./start-production.sh",
     "lint": "eslint",
