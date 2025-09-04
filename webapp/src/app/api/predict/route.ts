@@ -37,13 +37,13 @@ from db_utils import EduInsightDB
 
 try:
     # Load model and encoders
-    with open('../models/eduinsight_xgboost_model.pkl', 'rb') as f:
+    with open('./models/eduinsight_xgboost_model.pkl', 'rb') as f:
         model = pickle.load(f)
     
-    with open('../data/processed/label_encoders.pkl', 'rb') as f:
+    with open('./data/processed/label_encoders.pkl', 'rb') as f:
         encoders = pickle.load(f)
     
-    with open('../data/processed/scaler.pkl', 'rb') as f:
+    with open('./data/processed/scaler.pkl', 'rb') as f:
         scaler = pickle.load(f)
     
     # Get database connection for feature engineering

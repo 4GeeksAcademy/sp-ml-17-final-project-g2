@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "npm run setup-python && next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "start-production": "./start-production.sh",
+    "lint": "eslint",
+    "setup-python": "pip install -r requirements.txt"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
