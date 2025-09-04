@@ -2,9 +2,7 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['sqlite3'],
-  },
+  serverExternalPackages: ['sqlite3'],
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Ensure @ alias resolution works in all environments
     config.resolve.alias = {
