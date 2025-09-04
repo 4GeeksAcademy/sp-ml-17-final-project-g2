@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Globe, TrendingUp, BookOpen, Users, Calendar, Filter, CheckCircle, BarChart3, Info } from 'lucide-react';
+import { Globe, TrendingUp, BookOpen, Users, Filter, CheckCircle, Info } from 'lucide-react';
 
 interface EducationRecord {
   year: number;
@@ -187,13 +187,13 @@ export default function Dashboard() {
         existing[indicatorKey] = record.estimate;
       }
     } else {
-      const newEntry: any = { year };
+      const newEntry: Record<string, number> = { year };
       newEntry[indicatorKey] = record.estimate;
       acc.push(newEntry);
     }
     
     return acc;
-  }, [] as any[]).sort((a, b) => a.year - b.year);
+  }, [] as Record<string, number>[]).sort((a, b) => a.year - b.year);
 
   // Improved indicator distribution for pie chart
   const indicatorCounts = countryData.reduce((acc, record) => {
@@ -269,7 +269,7 @@ export default function Dashboard() {
                 <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Select a country from the dropdown to view its education data</p>
                 <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Choose a start and end year to define your analysis period</p>
                 <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Charts update automatically when you change selections</p>
-                <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Hover over the "i" icons for detailed explanations of each element</p>
+                <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Hover over the &ldquo;i&rdquo; icons for detailed explanations of each element</p>
                 <p className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-blue-600" />Use ML Predictions tab to forecast future education trends</p>
               </div>
             </div>

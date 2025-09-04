@@ -171,8 +171,6 @@ try:
     try:
         historical_data = db.get_country_performance(country)
         if historical_data is not None and not historical_data.empty:
-            # Filter for similar indicators if possible
-        try:
             # Improved indicator matching - try exact match first, then progressively broader
             similar_data = None
             
@@ -358,12 +356,231 @@ try:
     # Adjust confidence based on data quality
     confidence = confidence * data_quality_score
     
+    # Generate historical context and trend predictions
+    historical_context = {}
+    try:
+        # Get historical data for the last 20 years
+        current_year = 2023  # Last year with reliable data
+        start_year = max(1990, current_year - 19)  # 20 years back
+        
+        # Get actual historical data
+        if historical_data is not None and not historical_data.empty and similar_data is not None and not similar_data.empty:
+            # Filter historical data for the specific indicator and time range
+            recent_data = similar_data[
+                (similar_data['year'] >= start_year) & 
+                (similar_data['year'] <= current_year)
+            ].sort_values('year')
+            
+            # Clean data: handle duplicates by taking the median value per year
+            # This handles cases where there are multiple data sources or gender-disaggregated data
+            cleaned_data = recent_data.groupby('year')['estimate'].agg([
+                'median',   # Use median as it's robust to outliers
+                'count',    # Track how many values per year
+                'std'       # Standard deviation to assess quality
+            ]).reset_index()
+            
+            # Rename columns for clarity
+            cleaned_data.columns = ['year', 'estimate', 'data_points', 'std_dev']
+            
+            # Fill NaN standard deviations (when only 1 data point) with 0
+            cleaned_data['std_dev'] = cleaned_data['std_dev'].fillna(0)
+            
+            print(f"DEBUG: Cleaned data for {country} - {len(cleaned_data)} years, avg {cleaned_data['data_points'].mean():.1f} points per year", file=sys.stderr)
+            
+            historical_points = []
+            for _, row in cleaned_data.iterrows():
+                historical_points.append({
+                    'year': int(row['year']),
+                    'value': float(row['estimate']),
+                    'type': 'historical'
+                })
+            
+            # Generate predictions for missing years between last data and target year
+            if len(historical_points) > 0:
+                last_data_year = cleaned_data['year'].max()
+                
+                # Predict intermediate years if there's a gap
+                missing_years = []
+                
+                # Calculate more sophisticated trend for progressive predictions
+                if len(cleaned_data) >= 3:
+                    # Analyze historical trend over different time windows
+                    years = cleaned_data['year'].values
+                    values = cleaned_data['estimate'].values
+                    
+                    # Calculate trend using multiple methods
+                    linear_trend = np.polyfit(years, values, 1)[0]
+                    
+                    # Recent trend (last 5 years if available)
+                    recent_years = years[-5:] if len(years) >= 5 else years
+                    recent_values = values[-5:] if len(values) >= 5 else values
+                    recent_trend = np.polyfit(recent_years, recent_values, 1)[0] if len(recent_years) > 1 else linear_trend
+                    
+                    # Conservative trend weighting - limit extreme projections
+                    weighted_trend = (linear_trend * 0.3 + recent_trend * 0.7)
+                    
+                    # Cap trend magnitude to prevent unrealistic projections
+                    max_yearly_change = 2.0  # Maximum 2% change per year
+                    weighted_trend = max(-max_yearly_change, min(max_yearly_change, weighted_trend))
+                    
+                    # Adaptive dampening based on indicator type and current level
+                    last_value = values[-1]
+                    
+                    # Different dampening strategies by indicator type
+                    if 'literacy' in indicator.lower():
+                        # Literacy rates: very stable for developed countries
+                        if last_value > 90:  # High literacy countries should be very stable
+                            dampening_factor = 0.05  # Extremely conservative
+                            weighted_trend = max(-0.2, min(0.2, weighted_trend))  # Cap at 0.2% per year
+                            # For very high performers, assume stability rather than decline
+                            if weighted_trend < -0.1:
+                                weighted_trend = 0.05  # Slight improvement instead of decline
+                        else:
+                            dampening_factor = 0.3
+                            weighted_trend = max(-1.0, min(1.0, weighted_trend))
+                        plateau_resistance = max(0.1, (100 - last_value) / 100)
+                    elif any(term in indicator.lower() for term in ['enrollment', 'enrolment']):
+                        # Enrollment: more variable but still bounded
+                        if last_value > 95:  # Near universal enrollment
+                            dampening_factor = 0.1
+                            weighted_trend = max(-0.5, min(0.5, weighted_trend))
+                            if weighted_trend < -0.2:
+                                weighted_trend = 0.1  # Assume slight improvement
+                        else:
+                            dampening_factor = 0.4
+                            weighted_trend = max(-2.0, min(2.0, weighted_trend))
+                        plateau_resistance = max(0.15, (100 - last_value) / 100)
+                    else:
+                        # Other indicators: moderate dampening
+                        dampening_factor = 0.3
+                        weighted_trend = max(-1.5, min(1.5, weighted_trend))
+                        plateau_resistance = max(0.2, (100 - last_value) / 100)
+                    
+                    print(f"DEBUG: Trend analysis - Linear: {linear_trend:.3f}, Recent: {recent_trend:.3f}, Capped Weighted: {weighted_trend:.3f}", file=sys.stderr)
+                else:
+                    # Minimal trend for limited data - assume stability
+                    weighted_trend = 0
+                    dampening_factor = 0.1
+                    plateau_resistance = 0.5
+                
+                # Generate progressive predictions year by year with stability focus
+                if historical_points:
+                    base_value = historical_points[-1]['value']  # Last known historical value
+                else:
+                    base_value = features['setting_average']
+                
+                # For progressive predictions, use a more stable approach
+                for pred_year in range(last_data_year + 1, year + 1):
+                    # Create prediction for this year
+                    temp_features = features.copy()
+                    temp_features['year'] = pred_year
+                    
+                    # Years since last known data
+                    years_ahead = pred_year - last_data_year
+                    
+                    # Simple, realistic progression based on indicator type and current level
+                    if 'literacy' in indicator.lower() and base_value > 90:
+                        # High literacy countries: assume stability with tiny improvements
+                        progression = 0.1 * years_ahead  # 0.1% per year improvement
+                        projected_value = min(99.5, base_value + progression)
+                    elif 'literacy' in indicator.lower():
+                        # Lower literacy countries: moderate improvement
+                        progression = 0.5 * years_ahead  # 0.5% per year improvement
+                        projected_value = min(95, base_value + progression)
+                    elif any(term in indicator.lower() for term in ['enrollment', 'enrolment']) and base_value > 90:
+                        # High enrollment: stability with small fluctuations
+                        progression = 0.2 * years_ahead + (years_ahead % 2 - 0.5)  # Small variation
+                        projected_value = max(85, min(99, base_value + progression))
+                    elif any(term in indicator.lower() for term in ['enrollment', 'enrolment']):
+                        # Lower enrollment: moderate improvement
+                        progression = 1.0 * years_ahead  # 1% per year improvement
+                        projected_value = min(95, base_value + progression)
+                    else:
+                        # Other indicators: conservative improvement
+                        progression = 0.3 * years_ahead
+                        projected_value = max(0, min(100, base_value + progression))
+                    
+                    temp_features['setting_average'] = projected_value
+                    
+                    # Create feature array and predict
+                    temp_array = np.array([[temp_features[name] for name in feature_names]])
+                    temp_scaled = scaler.transform(temp_array)
+                    temp_prediction = model.predict(temp_scaled)[0]
+                    
+                    # Blend model prediction with stable progression (60% model, 40% stable)
+                    blended_prediction = temp_prediction * 0.6 + projected_value * 0.4
+                    
+                    # Ensure realistic bounds
+                    blended_prediction = max(0, min(100, blended_prediction))
+                    
+                    missing_years.append({
+                        'year': pred_year,
+                        'value': float(blended_prediction),
+                        'type': 'predicted' if pred_year < year else 'target'
+                    })
+                    
+                    print(f"DEBUG: Year {pred_year}, Base: {base_value:.1f}, Projected: {projected_value:.1f}, Model: {temp_prediction:.1f}, Blended: {blended_prediction:.1f}", file=sys.stderr)
+                
+                historical_context = {
+                    'historical_data': historical_points,
+                    'predictions': missing_years,
+                    'trend_info': {
+                        'data_points': len(historical_points),
+                        'year_range': f"{start_year}-{current_year}",
+                        'last_known_year': int(last_data_year),
+                        'last_known_value': float(recent_data.iloc[-1]['estimate'])
+                    }
+                }
+            else:
+                historical_context = {
+                    'historical_data': [],
+                    'predictions': [{
+                        'year': year,
+                        'value': float(prediction),
+                        'type': 'target'
+                    }],
+                    'trend_info': {
+                        'data_points': 0,
+                        'note': 'No historical data available for this indicator'
+                    }
+                }
+        else:
+            # No historical data - just return the target prediction
+            historical_context = {
+                'historical_data': [],
+                'predictions': [{
+                    'year': year,
+                    'value': float(prediction),
+                    'type': 'target'
+                }],
+                'trend_info': {
+                    'data_points': 0,
+                    'note': 'No historical data available for this country/indicator combination'
+                }
+            }
+            
+    except Exception as trend_error:
+        print(f"DEBUG: Trend analysis failed: {trend_error}", file=sys.stderr)
+        historical_context = {
+            'historical_data': [],
+            'predictions': [{
+                'year': year,
+                'value': float(prediction),
+                'type': 'target'
+            }],
+            'trend_info': {
+                'data_points': 0,
+                'note': 'Trend analysis unavailable'
+            }
+        }
+    
     result = {
         'prediction': float(prediction),
         'confidence': float(confidence),
         'year': year,
         'country': country,
         'indicator': indicator,
+        'historical_context': historical_context,
         'model_info': {
             'type': 'XGBoost Regressor',
             'accuracy': '94.75%',
@@ -394,7 +611,7 @@ except Exception as e:
     print(json.dumps(error_result))
 `;
 
-    const result = await executePythonScript(scriptCode);
+    const result = await executePythonScript(scriptCode) as { error?: string };
     
     // Check if result contains an error
     if (result.error) {

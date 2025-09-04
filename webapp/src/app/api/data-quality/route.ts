@@ -116,7 +116,7 @@ except Exception as e:
     print(json.dumps(error_result))
 `;
 
-    const result = await executePythonScript(scriptCode);
+    const result = await executePythonScript(scriptCode) as { error?: string };
     
     if (result.error) {
       return NextResponse.json(result, { status: 500 });

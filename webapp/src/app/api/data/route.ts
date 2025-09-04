@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
     if (yearsParam) {
       try {
         years = yearsParam.split(',').map(year => parseInt(year.trim()));
-      } catch (e) {
+      } catch (parseError) {
+        console.error('Years parsing error:', parseError);
         return NextResponse.json(
           { error: 'Invalid years format. Use comma-separated numbers.' },
           { status: 400 }
@@ -38,10 +39,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data);
     
   } catch (error) {
-    console.error('Error fetching country data:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch country data' },
-      { status: 500 }
-    );
+    console.error('Error querying database:', error);
+    return NextResponse.json({ error: 'Database query failed' }, { status: 500 });
   }
 }
