@@ -263,59 +263,63 @@ Latest results show the system successfully handles:
 - ✅ API endpoint functionality
 - ✅ ML model integration and bounds checking
 
-## � Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Python 3.8+** with pandas, scikit-learn, and xgboost
-- **Node.js 18+** and npm/yarn
-- **Git** for version control
+- **Python 3.8+** (included in GitHub Codespaces)
+- **Node.js 18+** (included in GitHub Codespaces)  
+- **Git** (included in GitHub Codespaces)
 
-### Installation & Setup
+### 🏃‍♂️ One-Command Setup (Copy & Paste)
 
-1. **Clone the repository**
+**For GitHub Codespaces users - paste this command in the terminal:**
+
+```bash
+cd /workspaces/sp-ml-17-final-project-g2/webapp && pip install -r requirements.txt && npm install && npm run dev
+```
+
+**That's it!** The app will start automatically at `http://localhost:3000`
+
+### 📋 Step-by-Step Setup (Alternative)
+
+If you prefer to run commands separately:
+
+1. **Navigate to the webapp directory**
    ```bash
-   git clone https://github.com/your-repo/eduinsight-ml-project.git
-   cd eduinsight-ml-project
+   cd /workspaces/sp-ml-17-final-project-g2/webapp
    ```
 
-2. **Install Python dependencies**
+2. **Install Python ML dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up the webapp**
+3. **Install Node.js dependencies**
    ```bash
-   cd webapp
    npm install
    ```
 
-4. **Initialize the database** (optional - already included)
+4. **Start the development server**
    ```bash
-   # Run the database setup notebook if you want to recreate the database
-   jupyter notebook database/database_setup.ipynb
-   ```
-
-5. **Start the development server**
-   ```bash
-   cd webapp
    npm run dev
    ```
 
-6. **Open the application**
-   - Navigate to `http://localhost:3000`
-   - Explore the dashboard and predictions interface
+5. **Open the application**
+   - The app will automatically start at `http://localhost:3000`
+   - Click the browser preview or open the URL directly
+   - Explore the dashboard and ML predictions interface
 
-### Running Tests
+### 🎯 What to Expect
+- ✅ **XGBoost ML model** loads automatically
+- ✅ **Interactive dashboard** with education data visualization
+- ✅ **Prediction interface** for forecasting education indicators
+- ✅ **SQLite database** with 340K+ education records ready to use
+- ✅ **Hot reload** enabled for development
+
+### 🧪 Optional: Run Tests
 ```bash
-cd webapp/tests
-./run_tests.sh
+cd /workspaces/sp-ml-17-final-project-g2/webapp/tests && ./run_tests.sh
 ```
-
-Choose from:
-1. Quick troubleshooter (data quality checks)
-2. Comprehensive test suite (full API validation)
-3. Component-specific tests
-4. Complete project validation
 
 ## �🛠️ Technology Stack
 
@@ -375,13 +379,13 @@ Choose from:
 - **Validation**: Progressive year-by-year predictions with realistic bounds
 
 ### Key Features Delivered
-✅ **Interactive Dashboard**: Real-time education data visualization
-✅ **ML Predictions**: Future education indicator forecasting  
-✅ **Country Comparisons**: Regional benchmarking and analysis
-✅ **Data Quality**: Fixed "teeth curve" issues with median aggregation
-✅ **Progressive Predictions**: Realistic year-by-year trend forecasting
-✅ **Comprehensive Testing**: 85.7% test pass rate (28 automated tests)
-✅ **Production Ready**: Clean code architecture with TypeScript
+**Interactive Dashboard**: Real-time education data visualization
+**ML Predictions**: Future education indicator forecasting  
+**Country Comparisons**: Regional benchmarking and analysis
+**Data Quality**: Fixed "teeth curve" issues with median aggregation
+**Progressive Predictions**: Realistic year-by-year trend forecasting
+**Comprehensive Testing**: 85.7% test pass rate (28 automated tests)
+**Production Ready**: Clean code architecture with TypeScript
 
 ### Technical Achievements
 - **Scalable Architecture**: Next.js API routes with Python ML integration
@@ -396,16 +400,16 @@ Choose from:
 
 ## 🎓 Project Status
 
-**Status**: ✅ **COMPLETED** - Production Ready
+**Status**:  **COMPLETED** - Production Ready
 
 This project successfully demonstrates all required ML bootcamp competencies:
-- ✅ **Problem Definition**: Global education analytics solution
-- ✅ **Data Acquisition**: 340K+ education records across 195 countries  
-- ✅ **Database Implementation**: SQLite with comprehensive queries
-- ✅ **Statistical Analysis**: Complete EDA with hypothesis testing
-- ✅ **Machine Learning**: XGBoost model with 94.75% accuracy
-- ✅ **Web Deployment**: Modern React/Next.js application
-- ✅ **Testing & QA**: 85.7% test pass rate with comprehensive validation
+- **Problem Definition**: Global education analytics solution
+- **Data Acquisition**: 340K+ education records across 195 countries  
+- **Database Implementation**: SQLite with comprehensive queries
+- **Statistical Analysis**: Complete EDA with hypothesis testing
+- **Machine Learning**: XGBoost model with 94.75% accuracy
+- **Web Deployment**: Modern React/Next.js application
+- **Testing & QA**: 85.7% test pass rate with comprehensive validation
 
 ## 🙏 Acknowledgments
 
