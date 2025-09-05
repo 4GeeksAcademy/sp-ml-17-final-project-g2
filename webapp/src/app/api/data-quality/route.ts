@@ -122,12 +122,17 @@ except Exception as e:
       return NextResponse.json(result, { status: 500 });
     }
     
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=7200'
+      }
+    });
     
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in data quality analysis:', error);
     return NextResponse.json(
-      { error: 'Failed to analyze data quality' },
+      { error: `Failed to analyze data quality: ${errorMessage}` },
       { status: 500 }
     );
   }

@@ -618,12 +618,18 @@ except Exception as e:
       return NextResponse.json(result, { status: 500 });
     }
     
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: {
+        'X-Processing-Time': 'This prediction was generated on Render free tier',
+        'X-Performance-Note': 'Upgrade hosting for 5-10x faster predictions'
+      }
+    });
     
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in ML prediction:', error);
     return NextResponse.json(
-      { error: 'Failed to generate prediction' },
+      { error: `Failed to generate prediction: ${errorMessage}` },
       { status: 500 }
     );
   }

@@ -18,7 +18,11 @@ export async function GET(request: NextRequest) {
     // If summary is requested, return country summary
     if (summary) {
       const summaryData = await getCountrySummary(country);
-      return NextResponse.json(summaryData);
+      return NextResponse.json(summaryData, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=7200'
+        }
+      });
     }
 
     // Parse years if provided
@@ -36,10 +40,18 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await getCountryPerformance(country, years);
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=7200'
+      }
+    });
     
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error querying database:', error);
-    return NextResponse.json({ error: 'Database query failed' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Database query failed: ${errorMessage}` }, 
+      { status: 500 }
+    );
   }
 }
