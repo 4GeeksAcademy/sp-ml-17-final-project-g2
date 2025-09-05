@@ -58,8 +58,11 @@ export async function executePythonScript(scriptCode: string): Promise<unknown> 
     });
 
     if (stderr && stderr.trim() !== '') {
-      console.error('Python stderr:', stderr);
-      throw new Error(`Python execution error: ${stderr}`);
+      console.log('Python stderr (warnings/debug):', stderr);
+      // Only treat stderr as error if it contains actual error keywords
+      if (stderr.toLowerCase().includes('error:') || stderr.toLowerCase().includes('traceback') || stderr.toLowerCase().includes('exception:')) {
+        throw new Error(`Python execution error: ${stderr}`);
+      }
     }
 
     if (!stdout || stdout.trim() === '') {
